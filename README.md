@@ -13,7 +13,8 @@ This is a [Blitz.js](https://github.com/blitz-js/blitz) app.
 - [ ] preview
 - [ ] slide
 - [ ] user
-- [ ] design
+- [ ] layout
+- [ ] breadcrumbs
 - [ ] test
 
 ## Design
