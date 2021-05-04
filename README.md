@@ -2,7 +2,41 @@
 
 This is a [Blitz.js](https://github.com/blitz-js/blitz) app.
 
-# **md2p**
+# **Markdown to Presentation**
+
+## Todo
+
+- [ ] top
+- [ ] list
+- [ ] new
+- [ ] edit
+- [ ] preview
+- [ ] slide
+- [ ] design
+- [ ] test
+
+## Design
+
+### Presentation
+
+- title
+- text
+
+### Page
+
+- text
+- presentation_id
+
+### Block
+
+- text
+- blockable_type
+- blockable_id
+- page_id
+
+### Block::H1
+
+- text
 
 ## Getting Started
 
