@@ -5,6 +5,7 @@ import * as z from "zod"
 const CreatePresentation = z
   .object({
     title: z.string(),
+    text: z.string(),
   })
   .nonstrict()
 

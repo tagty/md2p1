@@ -6,6 +6,7 @@ const UpdatePresentation = z
   .object({
     id: z.number(),
     title: z.string(),
+    text: z.string(),
   })
   .nonstrict()
 

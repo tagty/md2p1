@@ -1,20 +1,18 @@
-[![Blitz.js](https://raw.githubusercontent.com/blitz-js/art/master/github-cover-photo.png)](https://blitzjs.com)
-
-This is a [Blitz.js](https://github.com/blitz-js/blitz) app.
-
 # **Markdown to Presentation**
 
 ## Todo
 
-- [ ] top
-- [ ] list
-- [ ] new
-- [ ] edit
-- [ ] preview
+- [x] top
+- [x] list
+- [x] new
+- [x] edit
 - [ ] slide
+- [ ] preview
+- [ ] delete
 - [ ] user
 - [ ] layout
 - [ ] breadcrumbs
+- [ ] production
 - [ ] test
 
 ## Design
@@ -41,6 +39,10 @@ This is a [Blitz.js](https://github.com/blitz-js/blitz) app.
 - text
 
 ## Getting Started
+
+[![Blitz.js](https://raw.githubusercontent.com/blitz-js/art/master/github-cover-photo.png)](https://blitzjs.com)
+
+This is a [Blitz.js](https://github.com/blitz-js/blitz) app.
 
 Run your app in the development mode.
 
