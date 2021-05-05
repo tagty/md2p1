@@ -100,3 +100,10 @@ model BlockH1 {
   updatedAt DateTime @updatedAt
   text      String
 }
+
+model BlockList {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  text      String
+}

@@ -23,20 +23,45 @@ export default resolver.pipe(
       },
     })
 
-    const blockH1 = await db.blockH1.create({
-      data: {
-        text: input.text,
-      },
-    })
+    const rows = input.text.split("\n")
 
-    await db.block.create({
-      data: {
-        text: input.text,
-        buildableId: blockH1.id,
-        buildableType: "BlockH1",
-        slideId: slide.id,
-      },
-    })
+    for (let row of rows) {
+      if (row.startsWith("# ")) {
+        const text = row.replace("# ", "")
+
+        const buildable = await db.blockH1.create({
+          data: {
+            text: text,
+          },
+        })
+
+        await db.block.create({
+          data: {
+            text: input.text,
+            buildableId: buildable.id,
+            buildableType: "BlockH1",
+            slideId: slide.id,
+          },
+        })
+      } else if (row.startsWith("- ")) {
+        const text = row.replace("- ", "")
+
+        const buildable = await db.blockList.create({
+          data: {
+            text: text,
+          },
+        })
+
+        await db.block.create({
+          data: {
+            text: input.text,
+            buildableId: buildable.id,
+            buildableType: "BlockList",
+            slideId: slide.id,
+          },
+        })
+      }
+    }
 
     return presentation
   }
