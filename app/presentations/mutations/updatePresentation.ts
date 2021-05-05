@@ -26,30 +26,32 @@ export default resolver.pipe(
 
     const slideDeleteId = slideDelete?.id
 
+    const blocksDelete = await db.block.findMany({
+      where: {
+        slideId: slideDeleteId,
+      },
+    })
+
+    const buildableIds = blocksDelete.map((block) => block.buildableId)
+
     const deleteBlocks = db.block.deleteMany({
       where: {
         slideId: slideDeleteId,
       },
     })
 
-    const deleteSlides = db.slide.deleteMany({
+    const deleteSlide = db.slide.delete({
       where: {
-        presentationId: presentation.id,
+        id: slideDeleteId,
       },
     })
 
-    await db.$transaction([deleteBlocks, deleteSlides])
+    await db.$transaction([deleteBlocks, deleteSlide])
 
-    const buildableIds = await db.block.findMany({
-      where: {
-        slideId: slideDeleteId,
-      },
-    })
-
-    for (let buildableId in buildableIds) {
+    for (let buildableId of buildableIds) {
       await db.blockH1.delete({
         where: {
-          id: parseInt(buildableId),
+          id: Number(buildableId),
         },
       })
     }
@@ -62,9 +64,11 @@ export default resolver.pipe(
       },
     })
 
+    const text = data.text.replace("# ", "")
+
     const blockH1 = await db.blockH1.create({
       data: {
-        text: data.text,
+        text: text,
       },
     })
 
