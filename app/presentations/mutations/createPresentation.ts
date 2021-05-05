@@ -16,10 +16,25 @@ export default resolver.pipe(
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const presentation = await db.presentation.create({ data: input })
 
-    await db.slide.create({
+    const slide = await db.slide.create({
       data: {
         text: input.text,
         presentationId: presentation.id,
+      },
+    })
+
+    const blockH1 = await db.blockH1.create({
+      data: {
+        text: input.text,
+      },
+    })
+
+    await db.block.create({
+      data: {
+        text: input.text,
+        buildableId: blockH1.id,
+        buildableType: "BlockH1",
+        slideId: slide.id,
       },
     })
 

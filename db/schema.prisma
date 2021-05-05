@@ -70,14 +70,33 @@ model Presentation {
   updatedAt DateTime @updatedAt
   title     String
   text      String
-  Slide     Slide[]
+  slides    Slide[]
 }
 
 model Slide {
-  id             Int          @id @default(autoincrement())
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  id             Int           @id @default(autoincrement())
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
   text           String
-  presentation   Presentation @relation(fields: [presentationId], references: [id])
-  presentationId Int
+  presentation   Presentation? @relation(fields: [presentationId], references: [id])
+  presentationId Int?
+  blocks         Block[]
+}
+
+model Block {
+  id            Int      @id @default(autoincrement())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  text          String
+  buildableId   Int
+  buildableType String
+  slide         Slide?   @relation(fields: [slideId], references: [id])
+  slideId       Int?
+}
+
+model BlockH1 {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  text      String
 }
