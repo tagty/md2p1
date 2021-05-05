@@ -3,10 +3,14 @@ import { Head, Link, useQuery, useParam, BlitzPage, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import getSlide from "app/slides/queries/getSlide"
 import getPresentation from "app/presentations/queries/getPresentation"
+import getBlockH1 from "app/block-h1s/queries/getBlockH1"
 
 export const Slide = () => {
   const slideId = useParam("slideId", "number")
   const [slide] = useQuery(getSlide, { id: slideId })
+
+  const block = slide?.blocks[0]
+  const [blockH1] = useQuery(getBlockH1, { id: block.id })
 
   return (
     <>
@@ -17,6 +21,10 @@ export const Slide = () => {
       <div>
         <h1>Slide {slide.id}</h1>
         <pre>{JSON.stringify(slide, null, 2)}</pre>
+      </div>
+
+      <div>
+        <h1>{blockH1.text}</h1>
       </div>
     </>
   )

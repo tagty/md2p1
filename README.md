@@ -3,16 +3,12 @@
 ## Todo
 
 - [x] top
-- [x] list
-- [x] new
-- [x] edit
+- [x] presentation
 - [ ] slide
 - [ ] preview
-- [ ] delete
-- [ ] user
 - [ ] layout
-- [ ] breadcrumbs
 - [ ] editor
+- [ ] user
 - [ ] manage a slide
 - [ ] production
 - [ ] test
@@ -33,24 +29,24 @@
 
 ### Block
 
-- [ ] text
-- [ ] buildable_type
-- [ ] buildableId
-- [ ] pageId
+- [x] text
+- [x] buildableType
+- [x] buildableId
+- [x] pageId
 
 ### Block::H1
 
-- [ ] text
-
-### Block::Code
-
-- [ ] text
-- [ ] language
+- [x] text
 
 ### Block::List
 
 - [ ] text
 - [ ] level
+
+### Block::Code
+
+- [ ] text
+- [ ] language
 
 ## Getting Started
 
