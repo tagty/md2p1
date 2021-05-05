@@ -52,15 +52,15 @@ export const EditPresentation = () => {
 const EditPresentationPage: BlitzPage = () => {
   return (
     <div>
-      <Suspense fallback={<div>Loading...</div>}>
-        <EditPresentation />
-      </Suspense>
-
       <p>
         <Link href={Routes.PresentationsPage()}>
           <a>Presentations</a>
         </Link>
       </p>
+
+      <Suspense fallback={<div>Loading...</div>}>
+        <EditPresentation />
+      </Suspense>
     </div>
   )
 }

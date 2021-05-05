@@ -70,4 +70,14 @@ model Presentation {
   updatedAt DateTime @updatedAt
   title     String
   text      String
+  Slide     Slide[]
+}
+
+model Slide {
+  id             Int          @id @default(autoincrement())
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  text           String
+  presentation   Presentation @relation(fields: [presentationId], references: [id])
+  presentationId Int
 }

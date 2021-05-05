@@ -1,14 +1,17 @@
 import { Suspense } from "react"
-import { Head, Link, useRouter, useQuery, useParam, BlitzPage, useMutation, Routes } from "blitz"
+import { Head, Link, useQuery, useParam, BlitzPage, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import getPresentation from "app/presentations/queries/getPresentation"
-import deletePresentation from "app/presentations/mutations/deletePresentation"
+import getSlides from "app/slides/queries/getSlides"
 
 export const Presentation = () => {
-  const router = useRouter()
   const presentationId = useParam("presentationId", "number")
-  const [deletePresentationMutation] = useMutation(deletePresentation)
   const [presentation] = useQuery(getPresentation, { id: presentationId })
+  const [{ slides }] = useQuery(getSlides, {
+    where: { presentation: { id: presentationId } },
+    orderBy: { id: "asc" },
+  })
+  const slideId = slides[0]?.id
 
   return (
     <>
@@ -23,20 +26,15 @@ export const Presentation = () => {
         <Link href={Routes.EditPresentationPage({ presentationId: presentation.id })}>
           <a>Edit</a>
         </Link>
-
-        <button
-          type="button"
-          onClick={async () => {
-            if (window.confirm("This will be deleted")) {
-              await deletePresentationMutation({ id: presentation.id })
-              router.push(Routes.PresentationsPage())
-            }
-          }}
-          style={{ marginLeft: "0.5rem" }}
-        >
-          Delete
-        </button>
       </div>
+
+      {presentationId && slideId && (
+        <p>
+          <Link href={Routes.ShowSlidePage({ presentationId: presentationId, slideId: slideId })}>
+            <a>Slide</a>
+          </Link>
+        </p>
+      )}
     </>
   )
 }

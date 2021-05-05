@@ -12,6 +12,8 @@
 - [ ] user
 - [ ] layout
 - [ ] breadcrumbs
+- [ ] editor
+- [ ] manage a slide
 - [ ] production
 - [ ] test
 
@@ -19,24 +21,36 @@
 
 ### Presentation
 
-- title
-- text
+- [x] title
+- [x] text
+- [ ] userId
 
-### Page
+### Slide
 
-- text
-- presentation_id
+- [x] text
+- [ ] number
+- [x] presentationId
 
 ### Block
 
-- text
-- blockable_type
-- blockable_id
-- page_id
+- [ ] text
+- [ ] buildable_type
+- [ ] buildableId
+- [ ] pageId
 
 ### Block::H1
 
-- text
+- [ ] text
+
+### Block::Code
+
+- [ ] text
+- [ ] language
+
+### Block::List
+
+- [ ] text
+- [ ] level
 
 ## Getting Started
 

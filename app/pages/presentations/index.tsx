@@ -48,14 +48,6 @@ const PresentationsPage: BlitzPage = () => {
 
       <div>
         <p>
-          <Link href={Routes.Home()}>
-            <a>Top</a>
-          </Link>
-        </p>
-      </div>
-
-      <div>
-        <p>
           <Link href={Routes.NewPresentationPage()}>
             <a>Create Presentation</a>
           </Link>
