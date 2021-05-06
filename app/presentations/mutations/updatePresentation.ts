@@ -32,27 +32,18 @@ export default resolver.pipe(
 
     const slideIdDelete = slideDelete?.id
 
-    console.log(slideIdDelete)
-
     const blocksDelete = await db.block.findMany({
       where: {
         slideId: slideIdDelete,
       },
     })
 
-    const buildableIds = blocksDelete.map((block) => block.buildableId)
-
-    console.log(buildableIds)
-
-    // [{type: '', id: ''}, {type: '', id: ''}]
     const buildables = blocksDelete.map((block) => {
       return {
         type: block.buildableType,
-        id: block.id,
+        id: block.buildableId,
       }
     })
-
-    console.log(buildables)
 
     const deleteBlocks = db.block.deleteMany({
       where: {
@@ -68,12 +59,20 @@ export default resolver.pipe(
 
     await db.$transaction([deleteBlocks, deleteSlide])
 
-    for (let buildableId of buildableIds) {
-      await db.blockH1.delete({
-        where: {
-          id: Number(buildableId),
-        },
-      })
+    for (let buildable of buildables) {
+      if (buildable["type"] === "BlockH1") {
+        await db.blockH1.delete({
+          where: {
+            id: buildable["id"],
+          },
+        })
+      } else if (buildable["type"] === "BlockList") {
+        await db.blockList.delete({
+          where: {
+            id: buildable["id"],
+          },
+        })
+      }
     }
 
     // Create
@@ -83,23 +82,6 @@ export default resolver.pipe(
         presentationId: presentation.id,
       },
     })
-
-    // const text = data.text.replace("# ", "")
-
-    // const blockH1 = await db.blockH1.create({
-    //   data: {
-    //     text: text,
-    //   },
-    // })
-
-    // await db.block.create({
-    //   data: {
-    //     text: data.text,
-    //     buildableId: blockH1.id,
-    //     buildableType: "BlockH1",
-    //     slideId: slide.id,
-    //   },
-    // })
 
     const rows = data.text.split("\n")
 
@@ -115,7 +97,7 @@ export default resolver.pipe(
 
         await db.block.create({
           data: {
-            text: data.text,
+            text: row,
             buildableId: buildable.id,
             buildableType: "BlockH1",
             slideId: slide.id,
@@ -132,7 +114,7 @@ export default resolver.pipe(
 
         await db.block.create({
           data: {
-            text: data.text,
+            text: row,
             buildableId: buildable.id,
             buildableType: "BlockList",
             slideId: slide.id,

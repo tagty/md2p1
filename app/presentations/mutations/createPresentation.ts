@@ -37,7 +37,7 @@ export default resolver.pipe(
 
         await db.block.create({
           data: {
-            text: input.text,
+            text: row,
             buildableId: buildable.id,
             buildableType: "BlockH1",
             slideId: slide.id,
@@ -54,7 +54,7 @@ export default resolver.pipe(
 
         await db.block.create({
           data: {
-            text: input.text,
+            text: row,
             buildableId: buildable.id,
             buildableType: "BlockList",
             slideId: slide.id,
