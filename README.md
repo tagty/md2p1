@@ -40,7 +40,7 @@
 
 ### Block::List
 
-- [ ] text
+- [x] text
 - [ ] level
 
 ### Block::Code

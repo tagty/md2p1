@@ -2,15 +2,23 @@ import { Suspense } from "react"
 import { Head, Link, useQuery, useParam, BlitzPage, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import getSlide from "app/slides/queries/getSlide"
-import getPresentation from "app/presentations/queries/getPresentation"
 import getBlockH1 from "app/block-h1s/queries/getBlockH1"
+import getBlockList from "app/block-lists/queries/getBlockList"
+// import getPresentation from "app/presentations/queries/getPresentation"
+
+const BlockH1 = ({ block }) => {
+  const [buildable] = useQuery(getBlockH1, { id: block.buildableId })
+  return <h1>{buildable.text}</h1>
+}
+
+const BlockList = ({ block }) => {
+  const [buildable] = useQuery(getBlockList, { id: block.buildableId })
+  return <li>{buildable.text}</li>
+}
 
 export const Slide = () => {
   const slideId = useParam("slideId", "number")
   const [slide] = useQuery(getSlide, { id: slideId })
-
-  const block = slide?.blocks[0]
-  const [blockH1] = useQuery(getBlockH1, { id: block.id })
 
   return (
     <>
@@ -19,20 +27,23 @@ export const Slide = () => {
       </Head>
 
       <div>
-        <h1>Slide {slide.id}</h1>
-        <pre>{JSON.stringify(slide, null, 2)}</pre>
-      </div>
-
-      <div>
-        <h1>{blockH1.text}</h1>
+        {slide.blocks.map((block) => (
+          <div key={block.id}>
+            {block.buildableType === "BlockH1" ? (
+              <BlockH1 block={block} />
+            ) : (
+              <BlockList block={block} />
+            )}
+          </div>
+        ))}
       </div>
     </>
   )
 }
 
 const ShowSlidePage: BlitzPage = () => {
-  const presentationId = useParam("presentationId", "number")
-  const [presentation] = useQuery(getPresentation, { id: presentationId })
+  // const presentationId = useParam("presentationId", "number")
+  // const [presentation] = useQuery(getPresentation, { id: presentationId })
 
   return (
     <div>
@@ -41,13 +52,13 @@ const ShowSlidePage: BlitzPage = () => {
           <a>Presentations</a>
         </Link>
       </p>
-      {presentationId && (
+      {/* {presentationId && (
         <p>
           <Link href={Routes.ShowPresentationPage({ presentationId: presentationId })}>
             <a>{presentation.title}</a>
           </Link>
         </p>
-      )}
+      )} */}
 
       <Suspense fallback={<div>Loading...</div>}>
         <Slide />
