@@ -76,10 +76,11 @@ export default resolver.pipe(
     // Create
     const slidesText = data.text.split("---\n")
 
-    slidesText.forEach(async (slideText) => {
+    slidesText.forEach(async (slideText, index) => {
       const slide = await db.slide.create({
         data: {
           text: slideText,
+          number: index + 1,
           presentationId: presentation.id,
         },
       })

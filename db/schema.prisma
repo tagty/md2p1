@@ -81,6 +81,7 @@ model Slide {
   presentation   Presentation? @relation(fields: [presentationId], references: [id])
   presentationId Int?
   blocks         Block[]
+  number         Int           @default(0)
 }
 
 model Block {

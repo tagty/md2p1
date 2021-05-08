@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Slide" ADD COLUMN     "number" INTEGER NOT NULL DEFAULT 0;
