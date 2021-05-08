@@ -35,6 +35,12 @@ export const Presentation = () => {
           </Link>
         </p>
       )}
+
+      <p>
+        <Link href={Routes.SlidesPage({ presentationId: presentationId })}>
+          <a>Slides</a>
+        </Link>
+      </p>
     </>
   )
 }
