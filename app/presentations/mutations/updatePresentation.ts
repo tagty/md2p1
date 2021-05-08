@@ -20,108 +20,110 @@ export default resolver.pipe(
     const presentation = await db.presentation.update({ where: { id }, data })
 
     // Delete
-    // TODO: get slides
-    const slideDelete = await db.slide.findFirst({
+    const slidesDelete = await db.slide.findMany({
       where: {
-        presentationId: data.id,
-      },
-      orderBy: {
-        id: "desc",
+        presentationId: id,
       },
     })
 
-    const slideIdDelete = slideDelete?.id
+    slidesDelete.forEach(async (slide) => {
+      const slideId = slide?.id
 
-    const blocksDelete = await db.block.findMany({
-      where: {
-        slideId: slideIdDelete,
-      },
+      const blocks = await db.block.findMany({
+        where: {
+          slideId: slideId,
+        },
+      })
+
+      const buildables = blocks.map((block) => {
+        return {
+          type: block.buildableType,
+          id: block.buildableId,
+        }
+      })
+
+      const deleteBlocks = db.block.deleteMany({
+        where: {
+          slideId: slideId,
+        },
+      })
+
+      const deleteSlide = db.slide.delete({
+        where: {
+          id: slideId,
+        },
+      })
+
+      await db.$transaction([deleteBlocks, deleteSlide])
+
+      buildables.forEach(async (buildable) => {
+        if (buildable["type"] === "BlockH1") {
+          await db.blockH1.delete({
+            where: {
+              id: buildable["id"],
+            },
+          })
+        } else if (buildable["type"] === "BlockList") {
+          await db.blockList.delete({
+            where: {
+              id: buildable["id"],
+            },
+          })
+        }
+      })
     })
-
-    const buildables = blocksDelete.map((block) => {
-      return {
-        type: block.buildableType,
-        id: block.buildableId,
-      }
-    })
-
-    const deleteBlocks = db.block.deleteMany({
-      where: {
-        slideId: slideIdDelete,
-      },
-    })
-
-    const deleteSlide = db.slide.delete({
-      where: {
-        id: slideIdDelete,
-      },
-    })
-
-    await db.$transaction([deleteBlocks, deleteSlide])
-
-    for (let buildable of buildables) {
-      if (buildable["type"] === "BlockH1") {
-        await db.blockH1.delete({
-          where: {
-            id: buildable["id"],
-          },
-        })
-      } else if (buildable["type"] === "BlockList") {
-        await db.blockList.delete({
-          where: {
-            id: buildable["id"],
-          },
-        })
-      }
-    }
 
     // Create
-    const slide = await db.slide.create({
-      data: {
-        text: data.text,
-        presentationId: presentation.id,
-      },
+    const slidesText = data.text.split("---\n")
+
+    slidesText.forEach(async (slideText) => {
+      const slide = await db.slide.create({
+        data: {
+          text: slideText,
+          presentationId: presentation.id,
+        },
+      })
+
+      const rows = slideText.split("\n")
+
+      rows.forEach(async (row) => {
+        if (row.startsWith("# ")) {
+          const text = row.replace("# ", "")
+
+          const buildable = await db.blockH1.create({
+            data: {
+              text: text,
+            },
+          })
+
+          await db.block.create({
+            data: {
+              text: row,
+              buildableId: buildable.id,
+              buildableType: "BlockH1",
+              slideId: slide.id,
+            },
+          })
+        } else if (row.startsWith("- ")) {
+          const text = row.replace("- ", "")
+
+          const buildable = await db.blockList.create({
+            data: {
+              text: text,
+            },
+          })
+
+          await db.block.create({
+            data: {
+              text: row,
+              buildableId: buildable.id,
+              buildableType: "BlockList",
+              slideId: slide.id,
+            },
+          })
+        }
+      })
     })
-
-    const rows = data.text.split("\n")
-
-    for (let row of rows) {
-      if (row.startsWith("# ")) {
-        const text = row.replace("# ", "")
-
-        const buildable = await db.blockH1.create({
-          data: {
-            text: text,
-          },
-        })
-
-        await db.block.create({
-          data: {
-            text: row,
-            buildableId: buildable.id,
-            buildableType: "BlockH1",
-            slideId: slide.id,
-          },
-        })
-      } else if (row.startsWith("- ")) {
-        const text = row.replace("- ", "")
-
-        const buildable = await db.blockList.create({
-          data: {
-            text: text,
-          },
-        })
-
-        await db.block.create({
-          data: {
-            text: row,
-            buildableId: buildable.id,
-            buildableType: "BlockList",
-            slideId: slide.id,
-          },
-        })
-      }
-    }
 
     return presentation
   }

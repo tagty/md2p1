@@ -16,52 +16,56 @@ export default resolver.pipe(
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const presentation = await db.presentation.create({ data: input })
 
-    const slide = await db.slide.create({
-      data: {
-        text: input.text,
-        presentationId: presentation.id,
-      },
+    const slidesText = input.text.split("---\n")
+
+    slidesText.forEach(async (slideText) => {
+      const slide = await db.slide.create({
+        data: {
+          text: slideText,
+          presentationId: presentation.id,
+        },
+      })
+
+      const rows = slideText.split("\n")
+
+      rows.forEach(async (row) => {
+        if (row.startsWith("# ")) {
+          const text = row.replace("# ", "")
+
+          const buildable = await db.blockH1.create({
+            data: {
+              text: text,
+            },
+          })
+
+          await db.block.create({
+            data: {
+              text: row,
+              buildableId: buildable.id,
+              buildableType: "BlockH1",
+              slideId: slide.id,
+            },
+          })
+        } else if (row.startsWith("- ")) {
+          const text = row.replace("- ", "")
+
+          const buildable = await db.blockList.create({
+            data: {
+              text: text,
+            },
+          })
+
+          await db.block.create({
+            data: {
+              text: row,
+              buildableId: buildable.id,
+              buildableType: "BlockList",
+              slideId: slide.id,
+            },
+          })
+        }
+      })
     })
-
-    const rows = input.text.split("\n")
-
-    for (let row of rows) {
-      if (row.startsWith("# ")) {
-        const text = row.replace("# ", "")
-
-        const buildable = await db.blockH1.create({
-          data: {
-            text: text,
-          },
-        })
-
-        await db.block.create({
-          data: {
-            text: row,
-            buildableId: buildable.id,
-            buildableType: "BlockH1",
-            slideId: slide.id,
-          },
-        })
-      } else if (row.startsWith("- ")) {
-        const text = row.replace("- ", "")
-
-        const buildable = await db.blockList.create({
-          data: {
-            text: text,
-          },
-        })
-
-        await db.block.create({
-          data: {
-            text: row,
-            buildableId: buildable.id,
-            buildableType: "BlockList",
-            slideId: slide.id,
-          },
-        })
-      }
-    }
 
     return presentation
   }
