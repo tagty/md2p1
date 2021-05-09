@@ -43,11 +43,12 @@ export const SlidesList = () => {
     router.push({ query: { presentationId: presentationId, page: page + 1 } })
 
   const slide = slides[0]
+  const blocks = slide.blocks.sort((a, b) => a.number - b.number)
 
   return (
     <div>
       <div>
-        {slide.blocks.map((block) => (
+        {blocks.map((block) => (
           <div key={block.id}>
             {block.buildableType === "BlockH1" ? (
               <BlockH1 block={block} />

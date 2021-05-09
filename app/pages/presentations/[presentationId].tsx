@@ -2,16 +2,10 @@ import { Suspense } from "react"
 import { Head, Link, useQuery, useParam, BlitzPage, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import getPresentation from "app/presentations/queries/getPresentation"
-import getSlides from "app/slides/queries/getSlides"
 
 export const Presentation = () => {
   const presentationId = useParam("presentationId", "number")
   const [presentation] = useQuery(getPresentation, { id: presentationId })
-  const [{ slides }] = useQuery(getSlides, {
-    where: { presentation: { id: presentationId } },
-    orderBy: { id: "asc" },
-  })
-  const slideId = slides[0]?.id
 
   return (
     <>
@@ -28,19 +22,13 @@ export const Presentation = () => {
         </Link>
       </div>
 
-      {presentationId && slideId && (
+      {presentationId && (
         <p>
-          <Link href={Routes.ShowSlidePage({ presentationId: presentationId, slideId: slideId })}>
-            <a>Slide</a>
+          <Link href={Routes.SlidesPage({ presentationId: presentationId })}>
+            <a>Slides</a>
           </Link>
         </p>
       )}
-
-      <p>
-        <Link href={Routes.SlidesPage({ presentationId: presentationId })}>
-          <a>Slides</a>
-        </Link>
-      </p>
     </>
   )
 }

@@ -4,9 +4,9 @@
 
 - [x] top
 - [x] presentation
-- [ ] slide
-- [ ] preview
+- [x] slide
 - [ ] layout
+- [ ] preview
 - [ ] editor
 - [ ] user
 - [ ] manage a slide
