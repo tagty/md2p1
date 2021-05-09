@@ -109,3 +109,11 @@ model BlockList {
   updatedAt DateTime @updatedAt
   text      String
 }
+
+model BlockImage {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  src       String
+  alt       String
+}
