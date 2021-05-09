@@ -93,6 +93,7 @@ model Block {
   buildableType String
   slide         Slide?   @relation(fields: [slideId], references: [id])
   slideId       Int?
+  number        Int      @default(0)
 }
 
 model BlockH1 {

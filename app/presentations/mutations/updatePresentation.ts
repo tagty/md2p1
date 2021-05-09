@@ -87,7 +87,7 @@ export default resolver.pipe(
 
       const rows = slideText.split("\n")
 
-      rows.forEach(async (row) => {
+      rows.forEach(async (row, index) => {
         if (row.startsWith("# ")) {
           const text = row.replace("# ", "")
 
@@ -100,6 +100,7 @@ export default resolver.pipe(
           await db.block.create({
             data: {
               text: row,
+              number: index,
               buildableId: buildable.id,
               buildableType: "BlockH1",
               slideId: slide.id,
@@ -117,6 +118,7 @@ export default resolver.pipe(
           await db.block.create({
             data: {
               text: row,
+              number: index,
               buildableId: buildable.id,
               buildableType: "BlockList",
               slideId: slide.id,
