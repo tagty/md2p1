@@ -65,6 +65,32 @@ export default resolver.pipe(
               slideId: slide.id,
             },
           })
+        } else if (row.search(/^\[.+\]\(.+\)$/) !== -1) {
+          const alt = row
+            .replace(/\(.+\)$/, "")
+            .replace(/^\[/, "")
+            .replace(/\]$/, "")
+          const src = row
+            .replace(/^\[.+\]/, "")
+            .replace(/^\(/, "")
+            .replace(/\)$/, "")
+
+          const buildable = await db.blockImage.create({
+            data: {
+              src: src,
+              alt: alt,
+            },
+          })
+
+          await db.block.create({
+            data: {
+              text: row,
+              number: index,
+              buildableId: buildable.id,
+              buildableType: "BlockImage",
+              slideId: slide.id,
+            },
+          })
         }
       })
     })
