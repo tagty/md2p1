@@ -117,3 +117,11 @@ model BlockImage {
   src       String
   alt       String
 }
+
+model BlockCode {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  text      String
+  language  String
+}

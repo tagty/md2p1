@@ -75,6 +75,12 @@ export default resolver.pipe(
               id: buildable["id"],
             },
           })
+        } else if (buildable["type"] === "BlockCode") {
+          await db.blockCode.delete({
+            where: {
+              id: buildable["id"],
+            },
+          })
         }
       })
     })
@@ -91,7 +97,20 @@ export default resolver.pipe(
         },
       })
 
-      const rows = slideText.split("\n")
+      // Code
+      const slideTextsCode = slideText.split("```")
+
+      const slideTextsCodeReplace = slideTextsCode
+        .map((text) => {
+          if (text.startsWith(" ")) {
+            return text.replace(/\n/g, "__LF__")
+          } else {
+            return text
+          }
+        })
+        .join("\n")
+
+      const rows = slideTextsCodeReplace.split("\n")
 
       rows.forEach(async (row, index) => {
         if (row.startsWith("# ")) {
@@ -153,6 +172,27 @@ export default resolver.pipe(
               number: index,
               buildableId: buildable.id,
               buildableType: "BlockImage",
+              slideId: slide.id,
+            },
+          })
+        } else if (row.startsWith(" ")) {
+          const array = row.split("__LF__")
+          const language = array.shift()?.trim() || "plane"
+          const text = array.join("\n")
+
+          const buildable = await db.blockCode.create({
+            data: {
+              language: language,
+              text: text,
+            },
+          })
+
+          await db.block.create({
+            data: {
+              text: row,
+              number: index,
+              buildableId: buildable.id,
+              buildableType: "BlockCode",
               slideId: slide.id,
             },
           })

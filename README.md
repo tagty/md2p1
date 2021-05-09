@@ -4,7 +4,7 @@
 
 - [x] top
 - [x] presentation
-- [x] slide
+- [ ] slide
 - [ ] layout
 - [ ] preview
 - [ ] editor
@@ -45,8 +45,8 @@
 
 ### Block::Image
 
-- [ ] src
-- [ ] alt
+- [x] src
+- [x] alt
 
 ### Block::Code
 
