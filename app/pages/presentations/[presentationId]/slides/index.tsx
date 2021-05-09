@@ -13,6 +13,7 @@ import Layout from "app/core/layouts/Layout"
 import getSlides from "app/slides/queries/getSlides"
 import getBlockH1 from "app/block-h1s/queries/getBlockH1"
 import getBlockList from "app/block-lists/queries/getBlockList"
+import getBlockImage from "app/block-images/queries/getBlockImage"
 
 const ITEMS_PER_PAGE = 1
 
@@ -24,6 +25,11 @@ const BlockH1 = ({ block }) => {
 const BlockList = ({ block }) => {
   const [buildable] = useQuery(getBlockList, { id: block.buildableId })
   return <li>{buildable.text}</li>
+}
+
+const BlockImage = ({ block }) => {
+  const [buildable] = useQuery(getBlockImage, { id: block.buildableId })
+  return <img src={buildable.src} alt={buildable.alt} width="800px" />
 }
 
 export const SlidesList = () => {
@@ -52,9 +58,11 @@ export const SlidesList = () => {
           <div key={block.id}>
             {block.buildableType === "BlockH1" ? (
               <BlockH1 block={block} />
-            ) : (
+            ) : block.buildableType === "BlockList" ? (
               <BlockList block={block} />
-            )}
+            ) : block.buildableType === "BlockImage" ? (
+              <BlockImage block={block} />
+            ) : null}
           </div>
         ))}
       </div>
