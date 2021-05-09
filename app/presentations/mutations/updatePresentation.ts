@@ -69,6 +69,12 @@ export default resolver.pipe(
               id: buildable["id"],
             },
           })
+        } else if (buildable["type"] === "BlockImage") {
+          await db.blockImage.delete({
+            where: {
+              id: buildable["id"],
+            },
+          })
         }
       })
     })
@@ -121,6 +127,32 @@ export default resolver.pipe(
               number: index,
               buildableId: buildable.id,
               buildableType: "BlockList",
+              slideId: slide.id,
+            },
+          })
+        } else if (row.search(/^\[.+\]\(.+\)$/) !== -1) {
+          const alt = row
+            .replace(/\(.+\)$/, "")
+            .replace(/^\[/, "")
+            .replace(/\]$/, "")
+          const src = row
+            .replace(/^\[.+\]/, "")
+            .replace(/^\(/, "")
+            .replace(/\)$/, "")
+
+          const buildable = await db.blockImage.create({
+            data: {
+              src: src,
+              alt: alt,
+            },
+          })
+
+          await db.block.create({
+            data: {
+              text: row,
+              number: index,
+              buildableId: buildable.id,
+              buildableType: "BlockImage",
               slideId: slide.id,
             },
           })
