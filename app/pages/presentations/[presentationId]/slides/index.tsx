@@ -1,9 +1,30 @@
-import { Suspense } from "react"
-import { Head, Link, usePaginatedQuery, useRouter, useParam, BlitzPage, Routes } from "blitz"
+import React, { Suspense } from "react"
+import {
+  Head,
+  usePaginatedQuery,
+  useRouter,
+  useParam,
+  BlitzPage,
+  useQuery,
+  Routes,
+  Link,
+} from "blitz"
 import Layout from "app/core/layouts/Layout"
 import getSlides from "app/slides/queries/getSlides"
+import getBlockH1 from "app/block-h1s/queries/getBlockH1"
+import getBlockList from "app/block-lists/queries/getBlockList"
 
 const ITEMS_PER_PAGE = 1
+
+const BlockH1 = ({ block }) => {
+  const [buildable] = useQuery(getBlockH1, { id: block.buildableId })
+  return <h1>{buildable.text}</h1>
+}
+
+const BlockList = ({ block }) => {
+  const [buildable] = useQuery(getBlockList, { id: block.buildableId })
+  return <li>{buildable.text}</li>
+}
 
 export const SlidesList = () => {
   const router = useRouter()
@@ -21,13 +42,21 @@ export const SlidesList = () => {
   const goToNextPage = () =>
     router.push({ query: { presentationId: presentationId, page: page + 1 } })
 
+  const slide = slides[0]
+
   return (
     <div>
-      <ul>
-        {slides.map((slide) => (
-          <div key={slide.id}>{slide.text}</div>
+      <div>
+        {slide.blocks.map((block) => (
+          <div key={block.id}>
+            {block.buildableType === "BlockH1" ? (
+              <BlockH1 block={block} />
+            ) : (
+              <BlockList block={block} />
+            )}
+          </div>
         ))}
-      </ul>
+      </div>
 
       <button disabled={page === 0} onClick={goToPreviousPage}>
         Previous
@@ -40,21 +69,19 @@ export const SlidesList = () => {
 }
 
 const SlidesPage: BlitzPage = () => {
-  const presentationId = useParam("presentationId", "number")
-
   return (
     <>
       <Head>
         <title>Slides</title>
       </Head>
 
-      <div>
-        <p>
-          <Link href={Routes.NewSlidePage({ presentationId })}>
-            <a>Create Slide</a>
-          </Link>
-        </p>
+      <p>
+        <Link href={Routes.PresentationsPage()}>
+          <a>Presentations</a>
+        </Link>
+      </p>
 
+      <div>
         <Suspense fallback={<div>Loading...</div>}>
           <SlidesList />
         </Suspense>

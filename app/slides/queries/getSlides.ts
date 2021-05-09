@@ -12,7 +12,15 @@ export default resolver.pipe(
       skip,
       take,
       count: () => db.slide.count({ where }),
-      query: (paginateArgs) => db.slide.findMany({ ...paginateArgs, where, orderBy }),
+      query: (paginateArgs) =>
+        db.slide.findMany({
+          ...paginateArgs,
+          where,
+          orderBy,
+          include: {
+            blocks: true,
+          },
+        }),
     })
 
     return {
